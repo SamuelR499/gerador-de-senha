@@ -11,7 +11,14 @@
 </head>
 
 <body>
-    <img class="logo"  src="./images/logo.png" alt="Gerador de senha logo"/>
+    <div class="theme-btn">
+        <button type="button" onclick="changeTheme()">
+            <h2>
+                Chose Theme
+            </h2>
+        </button>
+    </div>
+    <div class="logo"><h2>GERADOR DE SENHA</h2></div>
     <main class="container-input">
         <span>Tamanho <span id="value"></span> caracteres</span>
         <input type="range" class="slider" id="slider" min="5" max="25" value="10" />
@@ -23,7 +30,6 @@
         <span id="password" class="password"></span>
         <span class="tooltip" id="tooltip">Clique na senha para copiar.👆</span>
     </div>
-
     <script src="script.js"></script>
 </body>
 
