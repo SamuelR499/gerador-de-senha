@@ -1,75 +1,106 @@
-//Agradecimentos ao Sujeito Programador -> https://www.youtube.com/watch?v=i6t2jaRxos4&t=749s&ab_channel=Sujeitoprogramador
-//Alem de inspiração para criar projetos, esse foi um bem legal de fazer!! ;)
-// let body = document.querySelector('body');
-// let all_h2 = document.querySelectorAll('h2');
-// let all_span = document.querySelectorAll('span');
-// let tooltip = document.querySelector('.tooltip');
-// let darkMode = true;
+// Seleção de Elementos
+const generatePasswordButton = document.querySelector("#generate-password");
+const generatedPasswordElement = document.querySelector("#generated-password");
 
-// let sliderElement = document.querySelector('#slider');
-// let buttonElement = document.querySelector('#button');
-// let sizePassword = document.querySelector('#value');
-// let Password = document.querySelector('#password');
+// Novas funcionalidades
+const openCloseGeneratorButton = document.querySelector(
+  "#open-generate-password"
+);
+const generatePasswordContainer = document.querySelector("#generate-options");
+const lengthInput = document.querySelector("#length");
+const lettersInput = document.querySelector("#letters");
+const numbersInput = document.querySelector("#numbers");
+const symbolsInput = document.querySelector("#symbols");
+const copyPasswordButton = document.querySelector("#copy-password");
 
-// let containerPassword = document.querySelector('#container-password');
-// let clipText = document.querySelector('#tooltip');
+// Funções
+const getLetterLowerCase = () => {
+  return String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+};
 
-// let charset = 'abcdefghijklmopqrstuvwyzABCDEFGHIJKLMNOPQRSTUVWYZ123456789@!#_-';
-// let newPass = '';
+const getLetterUpperCase = () => {
+  return String.fromCharCode(Math.floor(Math.random() * 26) + 65);
+};
 
-// sizePassword.innerHTML = sliderElement.value;
+const getNumber = () => {
+  return Math.floor(Math.random() * 10).toString();
+};
 
-// slider.oninput = function() {
-//   sizePassword.innerHTML = this.value;
-// };
+const getSymbol = () => {
+  const symbols = "(){}[]=<>/,.!@#$%&*+-";
+  return symbols[Math.floor(Math.random() * symbols.length)];
+};
 
-// function timeChange() {
-//   clipText.innerHTML = 'Clique na senha para copiar.';
-// }
-// function geradorDeSenha() {
-//   let pass = '';
-//   for (let i = 0, n = charset.length; i < sliderElement.value; i += 1) {
-//     pass += charset.charAt(Math.floor(Math.random() * n));
-//   }
-//   containerPassword.classList.remove('hide');
-//   Password.innerHTML = pass;
-//   newPass = pass;
-// }
+const generatePassword = (
+  getLetterLowerCase,
+  getLetterUpperCase,
+  getNumber,
+  getSymbol
+) => {
+  let password = "";
 
-// function copyPassword() {
-//   navigator.clipboard.writeText(newPass);
-//   clipText.innerHTML = 'Copied!';
-//   setTimeout(timeChange, 2000);
-// }
+  //   Segunda versão
+  const passwordLength = +lengthInput.value;
 
-// function changeTheme() {
-//   darkMode = !darkMode
-//   body.style = '#18181b'
-//   all_h2.forEach((elmnt)=>{
-//     elmnt.style.color = '#fff'
-//   });
-  
-//   all_span.forEach((elmnt)=>{
-//     elmnt.style.color = '#fff'
-//   });
+  const generators = [];
 
-//   if (darkMode === false) { 
-//     body.style.background = 'rgb(190 203 196)'
-//     all_h2.forEach((elmnt)=>{
-//       elmnt.style.color = '#18181b'
-//     });
+  if (lettersInput.checked) {
+    generators.push(getLetterLowerCase, getLetterUpperCase);
+  }
 
-//     all_span[0].style.color = 'rgb(24 24 27)'
-//     all_span[0].style.fontWeight = 'bold'
-//     all_span[1].style.color = 'rgb(24 24 27)'
-//     all_span[2].style.color = 'rgb(24 24 27)'
-//     all_span[2].style.fontWeight = 'bold'
-//     all_span[3].style.color = 'rgb(24 24 27)'
-//   }
+  if (numbersInput.checked) {
+    generators.push(getNumber);
+  }
 
-// };
+  if (symbolsInput.checked) {
+    generators.push(getSymbol);
+  }
 
+  console.log(generators.length);
 
-//Logo abaixo esta o codigo do script que gera senhas mais seguras e com fuincionalidades a mais. Projeto de JavaScript de Matheus Battista - Hora de codar | https://www.youtube.com/watch?v=dHPP83T9dAs&ab_channel=MatheusBattisti-HoradeCodar |
+  if (generators.length === 0) {
+    return;
+  }
 
-console.log('test');
+  for (i = 0; i < passwordLength; i = i + generators.length) {
+    generators.forEach(() => {
+      const randomValue =
+        generators[Math.floor(Math.random() * generators.length)]();
+
+      password += randomValue;
+    });
+  }
+
+  password = password.slice(0, passwordLength);
+
+  generatedPasswordElement.style.display = "block";
+  generatedPasswordElement.querySelector("h4").innerText = password;
+};
+
+// Eventos
+generatePasswordButton.addEventListener("click", () => {
+  generatePassword(
+    getLetterLowerCase,
+    getLetterUpperCase,
+    getNumber,
+    getSymbol
+  );
+});
+
+openCloseGeneratorButton.addEventListener("click", () => {
+  generatePasswordContainer.classList.toggle("hide");
+});
+
+copyPasswordButton.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  const password = generatedPasswordElement.querySelector("h4").innerText;
+
+  navigator.clipboard.writeText(password).then(() => {
+    copyPasswordButton.innerText = "Senha copiada com sucesso!";
+
+    setTimeout(() => {
+      copyPasswordButton.innerText = "Copiar";
+    }, 1000);
+  });
+});
